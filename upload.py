@@ -12,6 +12,8 @@ class Upload(bpy.types.Operator):
     bl_description = "Export to WebVR"
 
     def execute(self, context):
+        
+        # code ripped from https://gist.github.com/Utopiah/a2b9c6ecdb24ca8fd6f4f41a9c0eb32e 
 
         if "gltf" not in dir(bpy.ops.export_scene):
             print("Make sure to have glTF exporter installed first")
