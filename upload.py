@@ -3,12 +3,13 @@ import tempfile
 import os
 import time
 import requests
+import json
 from datetime import datetime
 
 class Upload(bpy.types.Operator):
-    bl_idname = "view3d.export_to_web"
+    bl_idname = "view3d.export_to_web_vr"
     bl_label = "Covert to gltf and upload to web"
-    bl_description = "Export to Web"
+    bl_description = "Export to WebVR"
 
     def execute(self, context):
 
@@ -19,7 +20,7 @@ class Upload(bpy.types.Operator):
 
         path = tempfile.gettempdir()
         t = str(int(datetime.timestamp(datetime.now())))
-        gltf ='model-'+t+'.glb'
+        gltf ='model-'+t+'.gltf'
         bin = 'model-'+t+'.bin'
 
         filepath = os.path.join(path, gltf)
@@ -27,7 +28,7 @@ class Upload(bpy.types.Operator):
         print(filepath)
 
         bpy.ops.object.select_all(action='SELECT')
-        bpy.ops.export_scene.gltf(filepath=filepath)
+        bpy.ops.export_scene.gltf(export_format='GLTF_SEPARATE',filepath=filepath)
 
         AFrameContentTemplate = '''<html>
         <head>
@@ -47,28 +48,31 @@ class Upload(bpy.types.Operator):
             AFrameContentTemplate.replace("animation-mixer", "")
 
         with open(filepath, 'rb') as f:
-            r = requests.post(bpy.context.scene.URLProps, files={'userfile': f})
+            r = requests.post(bpy.context.scene.URLProps.url+"/upload", files={'files': f})
+            print(r.text)
 
         filepath = os.path.join(path, bin)
         with open(filepath, 'rb') as f:
-            r = requests.post(bpy.context.scene.URLProps, files={'userfile': f})
+            r = requests.post(bpy.context.scene.URLProps.url+"/upload", files={'files': f})
+            print(r.text)
 
         print('done')
 
-        AFrameContent = AFrameContentTemplate.replace("GLTF", gltf)
+        AFrameContent = AFrameContentTemplate.replace("GLTF", bpy.context.scene.URLProps.url+"/download/"+gltf)
         aframe = tempfile.NamedTemporaryFile(delete=False)
-        with open(aframe.name, 'w') as f:
+        with open(aframe.name+'.html', 'w') as f:
             f.write(AFrameContent)
             # file is not immediately deleted, cf delete=False
 
-        import json
-        with open(aframe.name, 'rb') as f:
-            r = requests.post(bpy.context.scene.URLProps, files={'userfile': f})
-            res = json.loads(str(r.text))
+        
+        with open(aframe.name+'.html', 'rb') as f:
+            r = requests.post(bpy.context.scene.URLProps.url+"/upload", files={'files': f})
+            print(r.text)
+            
 
         #os.unlink(aframe.name)
-        if (res["result"]):
-            aframeExperienceUrl = bpy.context.scene.URLProps +"uploads/"+res["result"]
+        if (r.status_code == 200):
+            aframeExperienceUrl = bpy.context.scene.URLProps.url +"/download/"+ aframe.name.split('\\')[-1] +'.html'
             print("visit "+aframeExperienceUrl)
 
             import webbrowser

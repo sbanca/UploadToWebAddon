@@ -17,7 +17,7 @@
 #
 
 bl_info = {
-    "name" : "testaddon",
+    "name" : "Export to WebVR",
     "author" : "Riccardo",
     "description" : "Simple test addon",
     "blender" : (2, 80, 0),
