@@ -31,17 +31,17 @@ import bpy
 
 from . upload import Upload
 from . panel import UIPanel
-from . url import URLProps
+from . props import GlobalProps
+from . upload_firestore import UploadFirestore
 
-classes =(Upload,UIPanel,URLProps)
-
+classes =(Upload,UIPanel,GlobalProps,UploadFirestore)
 
 def register():
 
     from bpy.utils import register_class
     for cls in classes:
         register_class(cls)
-    bpy.types.Scene.URLProps = bpy.props.PointerProperty(type=URLProps)
+    bpy.types.Scene.GlobalProps = bpy.props.PointerProperty(type=GlobalProps)
 
 
 def unregister():
@@ -49,4 +49,4 @@ def unregister():
     from bpy.utils import unregister_class
     for cls in classes:
         unregister_class(cls)
-    del(bpy.types.Scene.URLProps)
+    del(bpy.types.Scene.GlobalProps)

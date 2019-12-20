@@ -1,0 +1,8 @@
+# python cache directory
+__pycache__/
+
+# Visual Studio cache directory
+.vscode/
+
+# private Key directory 
+privateKey/
