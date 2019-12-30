@@ -31,10 +31,10 @@ import bpy
 
 from . upload import Upload
 from . panel import UIPanel
-from . props import GlobalProps
+from . props import GlobalProps,GlobalPropsLoad,GlobalPropsSave
 from . upload_firestore import UploadFirestore
 
-classes =(Upload,UIPanel,GlobalProps,UploadFirestore)
+classes =(Upload,UIPanel,GlobalProps,GlobalPropsLoad,GlobalPropsSave,UploadFirestore)
 
 def register():
 

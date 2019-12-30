@@ -5,6 +5,8 @@ import time
 import requests
 import json
 from datetime import datetime
+from . props import GlobalProps
+
 
 class Upload(bpy.types.Operator):
     bl_idname = "view3d.export_to_web_vr"
@@ -14,6 +16,7 @@ class Upload(bpy.types.Operator):
     def execute(self, context):
         
         # code ripped from https://gist.github.com/Utopiah/a2b9c6ecdb24ca8fd6f4f41a9c0eb32e 
+
 
         if "gltf" not in dir(bpy.ops.export_scene):
             print("Make sure to have glTF exporter installed first")
@@ -50,17 +53,17 @@ class Upload(bpy.types.Operator):
             AFrameContentTemplate.replace("animation-mixer", "")
 
         with open(filepath, 'rb') as f:
-            r = requests.post(bpy.context.scene.URLProps.url+"/upload", files={'files': f})
+            r = requests.post(bpy.context.scene.GlobalProps.uploadUrl, files={'files': f})
             print(r.text)
 
         filepath = os.path.join(path, bin)
         with open(filepath, 'rb') as f:
-            r = requests.post(bpy.context.scene.URLProps.url+"/upload", files={'files': f})
+            r = requests.post(bpy.context.scene.GlobalProps.uploadUrl, files={'files': f})
             print(r.text)
 
         print('done')
 
-        AFrameContent = AFrameContentTemplate.replace("GLTF", bpy.context.scene.URLProps.url+"/download/"+gltf)
+        AFrameContent = AFrameContentTemplate.replace("GLTF", bpy.context.scene.URLProps.viewUrl+gltf)
         aframe = tempfile.NamedTemporaryFile(delete=False)
         with open(aframe.name+'.html', 'w') as f:
             f.write(AFrameContent)
@@ -68,13 +71,13 @@ class Upload(bpy.types.Operator):
 
         
         with open(aframe.name+'.html', 'rb') as f:
-            r = requests.post(bpy.context.scene.URLProps.url+"/upload", files={'files': f})
+            r = requests.post(bpy.context.scene.URLProps.uploadUrl, files={'files': f})
             print(r.text)
             
 
         #os.unlink(aframe.name)
         if (r.status_code == 200):
-            aframeExperienceUrl = bpy.context.scene.URLProps.url +"/download/"+ aframe.name.split('\\')[-1] +'.html'
+            aframeExperienceUrl = bpy.context.scene.URLProps.viewUrl + aframe.name.split('\\')[-1] +'.html'
             print("visit "+aframeExperienceUrl)
 
             import webbrowser
