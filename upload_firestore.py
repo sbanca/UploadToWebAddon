@@ -42,19 +42,6 @@ class UploadFirestore(bpy.types.Operator):
         db = firestore.client(app=app)
         bucket = storage.bucket(app=app)
         
-        ##get the list 
-        blob = bucket.blob("list.json")
-        directory = os.path.join(tempfile.gettempdir(),"temp.json")
-        
-        try: 
-            blob.download_to_filename(directory)
-
-            with open(directory) as json_file:  
-                data = json.load(json_file)
-        
-        except: 
-            data={'list':[]} 
-
         ##upload the files       
         print("upload to --> gs://" + bucket.name)  # "[DEFAULT]"
 
@@ -66,19 +53,7 @@ class UploadFirestore(bpy.types.Operator):
         blob = bucket.blob(bin)
         with open(file_path_bin, 'rb') as f:
             blob.upload_from_file(f)
-            print(blob.public_url)
-
-        data['list'].append(gltf)
-        data['list'].append(bin)
-        blob = bucket.blob("list.json")
-
-        ##upload the list 
-        with open(directory, 'w') as outfile:
-            json.dump(data, outfile)
-            
-        with open(directory, 'rb') as f:
-            blob.upload_from_file(f)
-            
+            print(blob.public_url)          
         
         return {'FINISHED'}
 
