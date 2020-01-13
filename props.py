@@ -10,7 +10,7 @@ class GlobalProps(bpy.types.PropertyGroup):
     uploadUrl: bpy.props.StringProperty(default="http://localhost:3000/upload")
     viewUrl: bpy.props.StringProperty(default="http://localhost:3000/download/")
     firebase_url: bpy.props.StringProperty(default="gltf-storage.appspot.com")
-    firebase_certificate: bpy.props.StringProperty(default="gltf-storage-firebase-adminsdk-b3kbp-8952bc56e8.json")
+    firebase_certificate: bpy.props.StringProperty(default="C:\\Program Files\\Blender Foundation\\Blender 2.81\\2.81\\scripts\\addons\\UploadToWebAddon\\gltf-storage-firebase-adminsdk.json")
     temp_file_name: bpy.props.StringProperty()
     app_name: bpy.props.StringProperty(default="blender gltf upload")
 

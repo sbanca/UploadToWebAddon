@@ -7,7 +7,7 @@ import json
 from datetime import datetime
 import firebase_admin
 from firebase_admin import credentials, firestore, storage, auth
-from . utils import save_file_gltf_bin, getDirectory
+from . utils import save_file_glb, getDirectory
 from . props import GlobalProps
 import json
 
@@ -24,13 +24,13 @@ class UploadFirestore(bpy.types.Operator):
         # Save File #   
         #############
 
-        path,gltf,bin,file_path_gltf,file_path_bin = save_file_gltf_bin()
+        path,glb,file_path_glb = save_file_glb()
 
         ######################
         # upload to firebase #
         ######################
 
-        certificateFilePath = getDirectory() + '\\' + bpy.context.scene.GlobalProps.firebase_certificate
+        certificateFilePath = bpy.context.scene.GlobalProps.firebase_certificate
 
         cred = credentials.Certificate(certificateFilePath)
 
@@ -45,15 +45,11 @@ class UploadFirestore(bpy.types.Operator):
         ##upload the files       
         print("upload to --> gs://" + bucket.name)  # "[DEFAULT]"
 
-        blob = bucket.blob(gltf)
-        with open(file_path_gltf, 'rb') as f:
+        blob = bucket.blob(glb)
+        with open(file_path_glb, 'rb') as f:
             blob.upload_from_file(f)
             print(blob.public_url)
-
-        blob = bucket.blob(bin)
-        with open(file_path_bin, 'rb') as f:
-            blob.upload_from_file(f)
-            print(blob.public_url)          
+        
         
         return {'FINISHED'}
 

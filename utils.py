@@ -8,7 +8,7 @@ from datetime import datetime
 import platform
 
 
-def save_file_gltf_bin():
+def save_file_glb():
     
     #############
     # Save File #   
@@ -16,16 +16,14 @@ def save_file_gltf_bin():
 
     path = tempfile.gettempdir()
     t = str(int(datetime.timestamp(datetime.now())))
-    gltf ='model-'+t+'.gltf'
-    bin = 'model-'+t+'.bin'
+    glb ='model-'+t+'.glb'
 
-    file_path_gltf = os.path.join(path, gltf)
-    file_path_bin = os.path.join(path, bin)
+    file_path_glb = os.path.join(path, glb)
 
     bpy.ops.object.select_all(action='SELECT')
-    bpy.ops.export_scene.gltf(export_format='GLTF_SEPARATE',filepath=file_path_gltf)      
+    bpy.ops.export_scene.gltf(export_format='GLB',filepath=file_path_glb)      
 
-    return path,gltf,bin,file_path_gltf,file_path_bin
+    return path,glb,file_path_glb
 
 def getDirectory():
 
