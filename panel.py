@@ -14,6 +14,9 @@ class UIPanel(bpy.types.Panel):
         props = bpy.context.scene.GlobalProps
         layout = self.layout       
         
+        #todo
+        #https://b3d.interplanety.org/en/creating-pop-up-panels-with-user-ui-in-blender-add-on/
+
         #global values management 
         layout.row().operator('view3d.save_values', text="Save values")
         layout.row().operator('view3d.load_values', text="Load Values")
